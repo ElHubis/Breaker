@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerBattle : MonoBehaviour
 {
+    //Stats för spelaren
     public string Name = "Heyn";
     public int PlayerDamage = 30;
     public int PlayerHeal = 15;
@@ -19,6 +20,7 @@ public class PlayerBattle : MonoBehaviour
     public int FireBlastCost = 20;
     public int HealCost = 15;
 
+    //Funktioner för att spelaren ska kunna ta skada och heala
     public void PlayerTakeDamage(int damage)
     {
         PlayerCurrentHP -= damage;

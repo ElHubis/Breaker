@@ -22,7 +22,8 @@ public class PlayerMovement : MonoBehaviour
         Animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
+    // Update is called once per frame 
+    //Hämtar inputs för att se om spelaren trycker på W,A,S,D
     void Update()
     {
         Movement.x = (Input.GetAxisRaw("Horizontal"));
@@ -33,11 +34,13 @@ public class PlayerMovement : MonoBehaviour
         Animator.SetFloat("Speed", Movement.magnitude);
     }
 
+    //Ändrar spelarens hastighet när man trycker på W,A,S,D
     private void FixedUpdate()
     {
         PlayerRB.velocity = new Vector2 (Movement.x, Movement.y).normalized*Speed;
     }
 
+    //Kollar vilken boss som ska laddas in
     private void OnTriggerEnter2D(Collider2D Collision)
     {
         if (Collision.gameObject.CompareTag("Radaman"))
@@ -46,10 +49,10 @@ public class PlayerMovement : MonoBehaviour
             SceneManager.LoadScene("BattleScreen");
         }
         // Den här koden var till för att ladda in den andra bossen men bossen fungerade inte till fullo så jag tog bort det
-        //else if (Collision.gameObject.CompareTag("Mood"))
-        //{
-        //    BattleSystem.CurrentBoss = "Mood";
-        //    SceneManager.LoadScene("BattleScreen");
-        //}
+        else if (Collision.gameObject.CompareTag("Mood"))
+        {
+            BattleSystem.CurrentBoss = "Mood";
+            SceneManager.LoadScene("BattleScreen");
+        }
     }  
 }

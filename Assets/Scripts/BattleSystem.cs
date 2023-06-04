@@ -11,51 +11,59 @@ public enum BattleState{ STARTBATTLE, PLAYERTURN, ENEMYTURN, WIN, LOSE }
 
 public class BattleSystem : MonoBehaviour
 {
+    //Prefabs som ska laddas in när det blir fight
     public GameObject PlayerPrefab;
     public GameObject RadamanPrefab;
     public GameObject MoodPrefab;
 
+    //Positioner för vart prefabs ska laddas in
     public Transform PlayerSpawn;
     public Transform EnemySpawn;
 
+    //Variabel för vilken boss som är aktiv
     public static string CurrentBoss = "";
 
+    //För att bestämma vilken stadie fighten är i
     public BattleState State;
 
+    //För att kolla om bossen eller spelaren dött
     public bool PlayerDead;
     public bool RadamanDead;
     public bool MoodDead;
 
+    //Importerar UI kod
     public BattleUI UI;
- 
+    
+    //Importerar kod för spelar karaktär och bossar
     PlayerBattle Player;
     Bosses Boss;
 
-    //De delar av koden som är bort kommenterade är mitt försök att lägga till en extra boss men det fungerade inte riktigt
 
     // Start is called before the first frame update
+    //Sätter igång fighten
     void Start()
     {
         State = BattleState.STARTBATTLE;
         StartBattle();
     }
 
+    //Laddar in prefabs och ställer in HP och MP för spelaren samt skriver starttexten
     void StartBattle()
     {
         GameObject PlayerObject = Instantiate(PlayerPrefab, PlayerSpawn);
         Player = PlayerObject.GetComponent<PlayerBattle>();
 
-        //if (CurrentBoss == "Radaman") 
-        //{
+        if (CurrentBoss == "Radaman") 
+        {
             GameObject BossObject = Instantiate(RadamanPrefab, EnemySpawn);
             Boss = BossObject.GetComponent<Bosses>();
-        //}
+        }
 
-        //else
-        //{
-        //    GameObject BossObject = Instantiate(MoodPrefab, EnemySpawn);
-        //    Boss = BossObject.GetComponent<Bosses>();   
-        //}
+        else
+        {
+            GameObject BossObject = Instantiate(MoodPrefab, EnemySpawn);
+            Boss = BossObject.GetComponent<Bosses>();   
+        }
 
         UI.SetHP(Player);
 
@@ -67,6 +75,7 @@ public class BattleSystem : MonoBehaviour
         PlayerTurn();
     }
 
+    //Funktion för spelarens attack
     IEnumerator PlayerAttack()
     {
         Player.PlayerCurrentMP += 5;
@@ -78,13 +87,31 @@ public class BattleSystem : MonoBehaviour
         
         UI.UpdateMP(Player.PlayerCurrentMP, Player);
 
-        bool RadamanDead = Boss.RadamanTakeDamage(Player.PlayerDamage);
-        //bool MoodDead = Boss.MoodTakeDamage(Player.PlayerDamage);
+        if (CurrentBoss == "Radaman")
+        {
+            Boss.RadamanTakeDamage(Player.PlayerDamage);
+        }
+
+        else
+        {
+            Boss.MoodTakeDamage(Player.PlayerDamage);
+        }
+
         UI.ActionText.text = " You Attacked " + CurrentBoss;
         
         yield return new WaitForSeconds(2f);
 
-        if ( RadamanDead == true) //|| MoodDead == true)
+        if (Boss.RadamanCurrentHP <= 0)
+        {
+            RadamanDead = true;
+        }
+
+        if (Boss.MoodCurrentHP <= 0)
+        {
+            MoodDead = true;
+        }
+
+        if ( RadamanDead == true || MoodDead == true)
         {
             State = BattleState.WIN;
 
@@ -104,6 +131,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    //Funktion för när spelaren trycker på defend
     IEnumerator PlayerDefend()
     {
         Player.PlayerCurrentMP += 10;
@@ -125,20 +153,38 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine (EnemyTurn());
     }
 
+    //Funktion för spelarens extra starká attack
     IEnumerator PlayerFireBlast()
     {
         Player.PlayerCurrentMP -= Player.FireBlastCost;
 
         UI.UpdateMP(Player.PlayerCurrentMP, Player);
 
-        bool RadamanDead = Boss.RadamanTakeDamage(Player.PlayerDamage * 2);
-        //bool MoodDead = Boss.MoodTakeDamage(Player.PlayerDamage * 2);
+        if (CurrentBoss == "Radaman")
+        {
+            Boss.RadamanTakeDamage(Player.PlayerDamage * 2);
+        }
 
-        UI.ActionText.text = " You Used Fire Blast ";
+        else
+        {
+            Boss.MoodTakeDamage(Player.PlayerDamage * 2);
+        }
+
+        UI.ActionText.text = " You Used Fire Blast" ;
 
         yield return new WaitForSeconds(2f);
 
-        if (RadamanDead == true )//|| MoodDead == true)
+        if (Boss.RadamanCurrentHP <= 0)
+        {
+            RadamanDead = true;
+        }
+
+        if (Boss.MoodCurrentHP <= 0)
+        {
+            MoodDead = true;
+        }
+
+        if (RadamanDead == true || MoodDead == true)
         {
             State = BattleState.WIN;
 
@@ -157,6 +203,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
+    //Funktion för att spelaren ska heala
     IEnumerator PlayerHeal()
     {
         Player.PlayerCurrentMP -= Player.HealCost;
@@ -175,14 +222,15 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(EnemyTurn());
     }
 
+    //Funktion som kontrollerar findernas beteende
     IEnumerator EnemyTurn()
     {
         UI.ActionText.text = CurrentBoss + " Is Acting ";
 
         yield return new WaitForSeconds(1f);
 
-        //if (CurrentBoss == "Radaman")
-        //{
+        if (CurrentBoss == "Radaman")
+        {
             if (Boss.RadamanCurrentHP <= Boss.RadamanMaxHP / 5)
             {
                 Boss.RadamanHealing();
@@ -209,37 +257,37 @@ public class BattleSystem : MonoBehaviour
 
                 yield return new WaitForSeconds(1f);
             }
-        //}
+        }
 
-        //if (CurrentBoss == "Mood")
-        //{
-        //    if (Boss.MoodCurrentHP <= Boss.MoodMaxHP / 5)
-        //    {
-        //        Boss.MoodHealing();
+        if (CurrentBoss == "Mood")
+        {
+            if (Boss.MoodCurrentHP <= Boss.MoodMaxHP / 5)
+            {
+                Boss.MoodHealing();
 
-        //        UI.ActionText.text = CurrentBoss + "Healed";
+                UI.ActionText.text = CurrentBoss + "Healed";
 
-        //        yield return new WaitForSeconds(1f);
-        //    }
+                yield return new WaitForSeconds(1f);
+            }
 
-        //    else if (Player.PlayerCurrentHP > Player.PlayerMaxHP / 1.5)
-        //    {
-        //        Player.PlayerTakeDamage(Boss.MoodDamage * 2 / Player.PlayerActiveDefence);
+            else if (Player.PlayerCurrentHP > Player.PlayerMaxHP / 1.5)
+            {
+                Player.PlayerTakeDamage(Boss.MoodDamage * 2 / Player.PlayerActiveDefence);
 
-        //        UI.ActionText.text = CurrentBoss + " Used Grass Slash";
+                UI.ActionText.text = CurrentBoss + " Used Grass Slash";
 
-        //        yield return new WaitForSeconds(1f);
-        //    }
+                yield return new WaitForSeconds(1f);
+            }
 
-        //    else
-        //    {
-        //        Player.PlayerTakeDamage(Boss.MoodDamage / Player.PlayerActiveDefence);
+            else
+            {
+                Player.PlayerTakeDamage(Boss.MoodDamage / Player.PlayerActiveDefence);
 
-        //        UI.ActionText.text = CurrentBoss + "Attacked";
+                UI.ActionText.text = CurrentBoss + "Attacked";
 
-        //        yield return new WaitForSeconds(1f);
-        //    }
-        //}
+                yield return new WaitForSeconds(1f);
+            }
+        }
 
 
         UI.UpdateHP(Player.PlayerCurrentHP, Player);
@@ -274,6 +322,7 @@ public class BattleSystem : MonoBehaviour
             PlayerTurn();
     }
 
+    //Kallas när det blir spelarens tur
     void PlayerTurn()
     {
         Player.PlayerActiveDefence = Player.PlayerDefence;
@@ -281,6 +330,7 @@ public class BattleSystem : MonoBehaviour
         UI.ActionText.text = " Choose Your Action";
     }
 
+    //Kallas när spelaren trycker på attack
     public void AttackButton()
     {
         if (State != BattleState.PLAYERTURN)
@@ -289,6 +339,7 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(PlayerAttack());
     }
 
+    //Kallas när spelaren trycker på defend
     public void DefendButton()
     {
         if (State != BattleState.PLAYERTURN)
@@ -297,6 +348,7 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(PlayerDefend());
     }
 
+    //Kallas när spelaren Fire Blast vilket är den starkare attacken
     public void FireBlastButton()
     {
         if (State != BattleState.PLAYERTURN || Player.PlayerCurrentMP < Player.FireBlastCost )
@@ -305,6 +357,7 @@ public class BattleSystem : MonoBehaviour
         StartCoroutine(PlayerFireBlast());
     }
 
+    //Kallas när spelaren trycker på heal
     public void HealButton()
     {
         if (State != BattleState.PLAYERTURN || Player.PlayerCurrentMP < Player.HealCost)

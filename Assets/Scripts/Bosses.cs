@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Bosses : MonoBehaviour
 {
+    //Bossarnas stats
     public string RadamanName = "Radaman";
     public int RadamanDamage = 10;
     public int RadamanHeal = 15;
@@ -16,14 +17,10 @@ public class Bosses : MonoBehaviour
     public int MoodMaxHP = 100;
     public int MoodCurrentHP = 100;
 
-    public bool RadamanTakeDamage(int damage)
+    //Funktioner för att bossarna ska ta skada och ska kunna heala
+    public void RadamanTakeDamage(int damage)
     {
         RadamanCurrentHP -= damage;
-
-        if (RadamanCurrentHP <= 0)
-            return true;
-        else
-            return false;
     }
 
     public void RadamanHealing()
@@ -31,14 +28,9 @@ public class Bosses : MonoBehaviour
         RadamanCurrentHP += RadamanHeal;
     }
 
-    public bool MoodTakeDamage(int damage)
+    public void MoodTakeDamage(int damage)
     {
         MoodCurrentHP -= damage;
-
-        if (MoodCurrentHP <= 0) 
-            return true; 
-        else
-            return false;
     }
 
     public void MoodHealing()
