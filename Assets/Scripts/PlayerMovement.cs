@@ -45,11 +45,11 @@ public class PlayerMovement : MonoBehaviour
             BattleSystem.CurrentBoss = "Radaman";
             SceneManager.LoadScene("BattleScreen");
         }
-
-        else if (Collision.gameObject.CompareTag("Mood"))
-        {
-            BattleSystem.CurrentBoss = "Mood";
-            SceneManager.LoadScene("BattleScreen");
-        }
+        // Den här koden var till för att ladda in den andra bossen men bossen fungerade inte till fullo så jag tog bort det
+        //else if (Collision.gameObject.CompareTag("Mood"))
+        //{
+        //    BattleSystem.CurrentBoss = "Mood";
+        //    SceneManager.LoadScene("BattleScreen");
+        //}
     }  
 }

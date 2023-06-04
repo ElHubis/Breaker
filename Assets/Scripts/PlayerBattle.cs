@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerBattle : MonoBehaviour
 {
     public string Name = "Heyn";
-    public int PlayerDamage = 15;
+    public int PlayerDamage = 30;
     public int PlayerHeal = 15;
     public int PlayerDefence = 1;
     public int PlayerActiveDefence = 1;

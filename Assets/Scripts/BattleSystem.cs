@@ -31,6 +31,8 @@ public class BattleSystem : MonoBehaviour
     PlayerBattle Player;
     Bosses Boss;
 
+    //De delar av koden som är bort kommenterade är mitt försök att lägga till en extra boss men det fungerade inte riktigt
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,17 +45,17 @@ public class BattleSystem : MonoBehaviour
         GameObject PlayerObject = Instantiate(PlayerPrefab, PlayerSpawn);
         Player = PlayerObject.GetComponent<PlayerBattle>();
 
-        if (CurrentBoss == "Radaman") 
-        {
+        //if (CurrentBoss == "Radaman") 
+        //{
             GameObject BossObject = Instantiate(RadamanPrefab, EnemySpawn);
             Boss = BossObject.GetComponent<Bosses>();
-        }
+        //}
 
-        else
-        {
-            GameObject BossObject = Instantiate(MoodPrefab, EnemySpawn);
-            Boss = BossObject.GetComponent<Bosses>();   
-        }
+        //else
+        //{
+        //    GameObject BossObject = Instantiate(MoodPrefab, EnemySpawn);
+        //    Boss = BossObject.GetComponent<Bosses>();   
+        //}
 
         UI.SetHP(Player);
 
@@ -76,21 +78,13 @@ public class BattleSystem : MonoBehaviour
         
         UI.UpdateMP(Player.PlayerCurrentMP, Player);
 
-        if (CurrentBoss == "Radaman")
-        {
-            bool RadamanDead = Boss.RadamanTakeDamage(Player.PlayerDamage);
-            UI.ActionText.text = " You Attacked " + CurrentBoss;
-        }
-
-        else
-        {
-            bool MoodDead = Boss.MoodTakeDamage(Player.PlayerDamage);
-            UI.ActionText.text = " You Attacked " + CurrentBoss;
-        }
-
+        bool RadamanDead = Boss.RadamanTakeDamage(Player.PlayerDamage);
+        //bool MoodDead = Boss.MoodTakeDamage(Player.PlayerDamage);
+        UI.ActionText.text = " You Attacked " + CurrentBoss;
+        
         yield return new WaitForSeconds(2f);
 
-        if ( RadamanDead == true || MoodDead == true)
+        if ( RadamanDead == true) //|| MoodDead == true)
         {
             State = BattleState.WIN;
 
@@ -137,23 +131,14 @@ public class BattleSystem : MonoBehaviour
 
         UI.UpdateMP(Player.PlayerCurrentMP, Player);
 
-        if (CurrentBoss == "Radaman")
-        {
-            bool RadamanDead = Boss.RadamanTakeDamage(Player.PlayerDamage * 2);
-            UI.ActionText.text = " You Attacked " + CurrentBoss;
-        }
-
-        else
-        {
-            bool MoodDead = Boss.MoodTakeDamage(Player.PlayerDamage * 2);
-            UI.ActionText.text = " You Attacked " + CurrentBoss;
-        }
+        bool RadamanDead = Boss.RadamanTakeDamage(Player.PlayerDamage * 2);
+        //bool MoodDead = Boss.MoodTakeDamage(Player.PlayerDamage * 2);
 
         UI.ActionText.text = " You Used Fire Blast ";
 
         yield return new WaitForSeconds(2f);
 
-        if (RadamanDead == true || MoodDead == true)
+        if (RadamanDead == true )//|| MoodDead == true)
         {
             State = BattleState.WIN;
 
@@ -196,8 +181,8 @@ public class BattleSystem : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        if (CurrentBoss == "Radaman")
-        {
+        //if (CurrentBoss == "Radaman")
+        //{
             if (Boss.RadamanCurrentHP <= Boss.RadamanMaxHP / 5)
             {
                 Boss.RadamanHealing();
@@ -224,37 +209,37 @@ public class BattleSystem : MonoBehaviour
 
                 yield return new WaitForSeconds(1f);
             }
-        }
+        //}
 
-        if (CurrentBoss == "Mood")
-        {
-            if (Boss.MoodCurrentHP <= Boss.MoodMaxHP / 5)
-            {
-                Boss.MoodHealing();
+        //if (CurrentBoss == "Mood")
+        //{
+        //    if (Boss.MoodCurrentHP <= Boss.MoodMaxHP / 5)
+        //    {
+        //        Boss.MoodHealing();
 
-                UI.ActionText.text = CurrentBoss + "Healed";
+        //        UI.ActionText.text = CurrentBoss + "Healed";
 
-                yield return new WaitForSeconds(1f);
-            }
+        //        yield return new WaitForSeconds(1f);
+        //    }
 
-            else if (Player.PlayerCurrentHP > Player.PlayerMaxHP / 1.5)
-            {
-                Player.PlayerTakeDamage(Boss.MoodDamage * 2 / Player.PlayerActiveDefence);
+        //    else if (Player.PlayerCurrentHP > Player.PlayerMaxHP / 1.5)
+        //    {
+        //        Player.PlayerTakeDamage(Boss.MoodDamage * 2 / Player.PlayerActiveDefence);
 
-                UI.ActionText.text = CurrentBoss + " Used Grass Slash";
+        //        UI.ActionText.text = CurrentBoss + " Used Grass Slash";
 
-                yield return new WaitForSeconds(1f);
-            }
+        //        yield return new WaitForSeconds(1f);
+        //    }
 
-            else
-            {
-                Player.PlayerTakeDamage(Boss.MoodDamage / Player.PlayerActiveDefence);
+        //    else
+        //    {
+        //        Player.PlayerTakeDamage(Boss.MoodDamage / Player.PlayerActiveDefence);
 
-                UI.ActionText.text = CurrentBoss + "Attacked";
+        //        UI.ActionText.text = CurrentBoss + "Attacked";
 
-                yield return new WaitForSeconds(1f);
-            }
-        }
+        //        yield return new WaitForSeconds(1f);
+        //    }
+        //}
 
 
         UI.UpdateHP(Player.PlayerCurrentHP, Player);
