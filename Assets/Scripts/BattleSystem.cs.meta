@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 97ff1152d0ae53f4fbc15c05705370a7
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - PlayerPrefab: {fileID: 4244063811179056883, guid: f89f54ef3b3a0c34e928e826dfdb60ef, type: 3}
+  - RadamanPrefab: {fileID: 175396718041147124, guid: ebb4866385f9df74d87e460c60620acc, type: 3}
+  - MoodPrefab: {fileID: 1508314902162722527, guid: 9678f92fad5c23249ba0fec4ea102e92, type: 3}
+  - PlayerSpawn: {instanceID: 0}
+  - EnemySpawn: {instanceID: 0}
+  - UI: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
